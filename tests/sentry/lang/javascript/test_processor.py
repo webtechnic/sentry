@@ -247,7 +247,9 @@ class GenerateModuleTest(TestCase):
         assert generate_module('/a/javascripts/application-bundle-149360d3414c26adac3febdf6832e25c.min.js') == 'a/javascripts/application-bundle'
         assert generate_module('https://example.com/libs/libs-20150417171659.min.js') == 'libs/libs'
         assert generate_module('webpack:///92cd589eca8235e7b373bf5ae94ebf898e3b949c/vendor.js') == 'vendor'
-        assert generate_module('webpack:///example/92cd589eca8235e7b373bf5ae94ebf898e3b949c/vendor.js') == 'vendor'
+        assert generate_module('webpack:///92cd589eca8235e7b373bf5ae94ebf898e3b949c/vendor.js') == 'vendor'
+        assert generate_module('app:///92cd589eca8235e7b373bf5ae94ebf898e3b949c/vendor.js') == 'vendor'
+        assert generate_module('app:///example/92cd589eca8235e7b373bf5ae94ebf898e3b949c/vendor.js') == 'vendor'
         assert generate_module('~/app/components/projectHeader/projectSelector.jsx') == 'app/components/projectHeader/projectSelector'
 
 
@@ -271,16 +273,6 @@ class FetchSourcemapTest(TestCase):
     def test_broken_base64(self):
         with pytest.raises(UnparseableSourcemap):
             fetch_sourcemap('data:application/json;base64,xxx')
-
-    @responses.activate
-    def test_simple_non_utf8(self):
-        responses.add(responses.GET, 'http://example.com', body='{}',
-                      content_type='application/json; charset=NOPE')
-
-        with pytest.raises(CannotFetchSource) as exc:
-            fetch_sourcemap('http://example.com')
-
-        assert exc.value.data['type'] == EventError.JS_INVALID_SOURCE_ENCODING
 
     @responses.activate
     def test_garbage_json(self):

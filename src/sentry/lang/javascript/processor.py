@@ -2,7 +2,6 @@ from __future__ import absolute_import, print_function
 
 __all__ = ['JavaScriptStacktraceProcessor']
 
-import codecs
 import logging
 import re
 import base64
@@ -62,6 +61,7 @@ VERSION_RE = re.compile(r'^[a-f0-9]{32}|[a-f0-9]{40}$', re.I)
 # fetched
 MAX_RESOURCE_FETCHES = 100
 MAX_URL_LENGTH = 150
+NODE_MODULES_RE = re.compile(r'\bnode_modules/')
 
 # TODO(dcramer): we want to change these to be constants so they are easier
 # to translate/link again
@@ -494,16 +494,6 @@ def fetch_file(url, project=None, release=None, allow_scraping=True):
     return UrlResult(url, result[0], result[1], result[3])
 
 
-def is_utf8(encoding):
-    if encoding is None:
-        return True
-    try:
-        return codecs.lookup(encoding).name == 'utf-8'
-    except LookupError:
-        # Encoding is entirely unknown, so definitely not utf-8
-        return False
-
-
 def fetch_sourcemap(url, project=None, release=None, allow_scraping=True):
     if is_data_uri(url):
         try:
@@ -519,15 +509,6 @@ def fetch_sourcemap(url, project=None, release=None, allow_scraping=True):
         result = fetch_file(url, project=project, release=release,
                             allow_scraping=allow_scraping)
         body = result.body
-
-        # This is just a quick sanity check, but doesn't guarantee
-        if not is_utf8(result.encoding):
-            error = {
-                'type': EventError.JS_INVALID_SOURCE_ENCODING,
-                'value': 'utf8',
-                'url': expose_url(url),
-            }
-            raise CannotFetchSource(error)
 
     try:
         return view_from_json(body)
@@ -764,10 +745,16 @@ class JavaScriptStacktraceProcessor(StacktraceProcessor):
                     # We want to explicitly generate a webpack module name
                     new_frame['module'] = generate_module(filename)
 
+                if abs_path.startswith('app:'):
+                    if NODE_MODULES_RE.search(filename):
+                        in_app = False
+                    else:
+                        in_app = True
+
                 new_frame['abs_path'] = abs_path
                 new_frame['filename'] = filename
                 if not frame.get('module') and abs_path.startswith(
-                        ('http:', 'https:', 'webpack:')):
+                        ('http:', 'https:', 'webpack:', 'app:')):
                     new_frame['module'] = generate_module(abs_path)
 
         elif sourcemap_url:

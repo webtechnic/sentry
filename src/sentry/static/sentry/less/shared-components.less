@@ -696,6 +696,24 @@ table.integrations {
   }
 }
 
+.hint-enter {
+  opacity: 0.01;
+}
+
+.hint-enter.hint-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.hint-leave {
+  opacity: 1;
+}
+
+.hint-leave.hint-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
 .toast {
   .loading.mini();
   padding: 20px 30px;
@@ -922,6 +940,25 @@ table.integrations {
     height: 16px;
     border-left: 1px solid #f1f2f3;
     margin: 0 5px;
+  }
+}
+
+.inbound-filters-stats {
+
+  .bar-chart figure a {
+    height: 50px;
+
+    span {
+      &.filtered {
+        background: @gray-lightest;
+      }
+    }
+
+    &:hover span {
+      &.filtered {
+        background: @gray-light;
+      }
+    }
   }
 }
 
@@ -2505,6 +2542,10 @@ ul.faces {
 .nav-stacked li  {
   margin-bottom: 6px;
 
+  &.badged {
+    white-space: nowrap;
+  }
+
   > a {
     font-size: 16px;
     line-height: 1.5;
@@ -3231,6 +3272,10 @@ ul.radio-inputs {
 .blankslate {
   text-align: center;
   padding: 50px 0;
+
+  h5 {
+    margin-bottom: 10px;
+  }
 }
 
 /**
