@@ -29,6 +29,7 @@ import OrganizationDashboard from './views/organizationDashboard';
 import OrganizationDetails from './views/organizationDetails';
 import OrganizationRateLimits from './views/organizationRateLimits';
 import OrganizationRepositories from './views/organizationRepositories';
+import OrganizationSettings from './views/organizationSettings';
 import OrganizationStats from './views/organizationStats';
 import OrganizationTeams from './views/organizationTeams';
 import AllTeamsList from './views/organizationTeams/allTeamsList';
@@ -56,6 +57,7 @@ import ReleaseArtifacts from './views/releaseArtifacts';
 import ReleaseCommits from './views/releases/releaseCommits';
 import ReleaseDetails from './views/releaseDetails';
 import ReleaseNewEvents from './views/releaseNewEvents';
+import ReleaseOverview from './views/releases/releaseOverview';
 import RouteNotFound from './views/routeNotFound';
 import SharedGroupDetails from './views/sharedGroupDetails';
 import Stream from './views/stream';
@@ -113,6 +115,7 @@ function routes() {
 
         <Route path="/organizations/:orgId/audit-log/" component={errorHandler(OrganizationAuditLog)} />
         <Route path="/organizations/:orgId/repos/" component={errorHandler(OrganizationRepositories)} />
+        <Route path="/organizations/:orgId/settings/" component={errorHandler(OrganizationSettings)} />
         <Route path="/organizations/:orgId/teams/" component={errorHandler(OrganizationTeams)} />
         <Route path="/organizations/:orgId/teams/:teamId/" component={errorHandler(TeamDetails)}>
           <IndexRedirect to="settings/" />
@@ -148,6 +151,7 @@ function routes() {
           <Route path="releases/" component={errorHandler(ProjectReleases)} />
           <Route name="releaseDetails" path="releases/:version/" component={errorHandler(ReleaseDetails)}>
             <IndexRoute component={errorHandler(ReleaseNewEvents)} />
+            <Route path="overview/" component={errorHandler(ReleaseOverview)} />
             <Route path="all-events/" component={errorHandler(ReleaseAllEvents)} />
             <Route path="artifacts/" component={errorHandler(ReleaseArtifacts)} />
             <Route path="commits/" component={errorHandler(ReleaseCommits)}/>

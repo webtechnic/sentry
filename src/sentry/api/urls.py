@@ -44,6 +44,8 @@ from .endpoints.organization_index import OrganizationIndexEndpoint
 from .endpoints.organization_projects import OrganizationProjectsEndpoint
 from .endpoints.organization_releases import OrganizationReleasesEndpoint
 from .endpoints.organization_release_details import OrganizationReleaseDetailsEndpoint
+from .endpoints.organization_release_files import OrganizationReleaseFilesEndpoint
+from .endpoints.organization_release_file_details import OrganizationReleaseFileDetailsEndpoint
 from .endpoints.organization_repositories import OrganizationRepositoriesEndpoint
 from .endpoints.organization_config_repositories import OrganizationConfigRepositoriesEndpoint
 from .endpoints.organization_repository_commits import OrganizationRepositoryCommitsEndpoint
@@ -80,9 +82,11 @@ from .endpoints.project_user_reports import ProjectUserReportsEndpoint
 from .endpoints.project_processingissues import ProjectProcessingIssuesEndpoint
 from .endpoints.project_reprocessing import ProjectReprocessingEndpoint
 from .endpoints.release_commits import ReleaseCommitsEndpoint
+from .endpoints.filechange import CommitFileChangeEndpoint
+from .endpoints.issues_resolved_in_release import IssuesResolvedInReleaseEndpoint
 from .endpoints.project_release_details import ProjectReleaseDetailsEndpoint
-from .endpoints.release_files import ReleaseFilesEndpoint
-from .endpoints.release_file_details import ReleaseFileDetailsEndpoint
+from .endpoints.project_release_files import ProjectReleaseFilesEndpoint
+from .endpoints.project_release_file_details import ProjectReleaseFileDetailsEndpoint
 from .endpoints.dsym_files import DSymFilesEndpoint, GlobalDSymFilesEndpoint, \
     UnknownDSymFilesEndpoint, UnknownGlobalDSymFilesEndpoint
 from .endpoints.shared_group_details import SharedGroupDetailsEndpoint
@@ -207,6 +211,15 @@ urlpatterns = patterns(
     url(r'^organizations/(?P<organization_slug>[^\/]+)/releases/(?P<version>[^/]+)/$',
         OrganizationReleaseDetailsEndpoint.as_view(),
         name='sentry-api-0-organization-release-details'),
+    url(r'^organizations/(?P<organization_slug>[^\/]+)/releases/(?P<version>[^/]+)/files/$',
+        OrganizationReleaseFilesEndpoint.as_view(),
+        name='sentry-api-0-organization-release-files'),
+    url(r'^organizations/(?P<organization_slug>[^\/]+)/releases/(?P<version>[^/]+)/files/(?P<file_id>\d+)/$',
+        OrganizationReleaseFileDetailsEndpoint.as_view(),
+        name='sentry-api-0-organization-release-file-details'),
+    url(r'^organizations/(?P<organization_slug>[^\/]+)/releases/(?P<version>[^/]+)/commitfiles/$',
+        CommitFileChangeEndpoint.as_view(),
+        name='sentry-api-0-release-commitfilechange'),
     url(r'^organizations/(?P<organization_slug>[^\/]+)/stats/$',
         OrganizationStatsEndpoint.as_view(),
         name='sentry-api-0-organization-stats'),
@@ -294,12 +307,15 @@ urlpatterns = patterns(
     url(r'^projects/(?P<organization_slug>[^\/]+)/(?P<project_slug>[^\/]+)/releases/(?P<version>[^/]+)/commits/$',
         ReleaseCommitsEndpoint.as_view(),
         name='sentry-api-0-release-commits'),
+    url(r'^projects/(?P<organization_slug>[^\/]+)/(?P<project_slug>[^\/]+)/releases/(?P<version>[^/]+)/resolved/$',
+        IssuesResolvedInReleaseEndpoint.as_view(),
+        name='sentry-api-0-release-resolved'),
     url(r'^projects/(?P<organization_slug>[^\/]+)/(?P<project_slug>[^\/]+)/releases/(?P<version>[^/]+)/files/$',
-        ReleaseFilesEndpoint.as_view(),
-        name='sentry-api-0-release-files'),
+        ProjectReleaseFilesEndpoint.as_view(),
+        name='sentry-api-0-project-release-files'),
     url(r'^projects/(?P<organization_slug>[^\/]+)/(?P<project_slug>[^\/]+)/releases/(?P<version>[^/]+)/files/(?P<file_id>\d+)/$',
-        ReleaseFileDetailsEndpoint.as_view(),
-        name='sentry-api-0-release-file-details'),
+        ProjectReleaseFileDetailsEndpoint.as_view(),
+        name='sentry-api-0-project-release-file-details'),
     url(r'^projects/(?P<organization_slug>[^\/]+)/(?P<project_slug>[^\/]+)/files/dsyms/$',
         DSymFilesEndpoint.as_view(),
         name='sentry-api-0-dsym-files'),
