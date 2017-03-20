@@ -27,7 +27,6 @@ Version 8.14
 - Added bulk "Resolve in Next Release" to stream actions.
 - Various visual improvements to notifications, including the addition of
   transactions.
-- Added feature signals, such as first time release tracking is enabled.
 - Plugins can now add tasks that run in sentry as celery workers.
 - Added the ability to verify TLS connections when fetching artifacts.
 - Added data migration to merge environments across an organization
